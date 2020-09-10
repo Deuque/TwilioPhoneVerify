@@ -1,7 +1,8 @@
 name: twilio_phone_verify
 description: A Package that helps in verifying phone numbers and email addresses using Twilio.
 version: 0.0.1
-author: Duke Chiaha
+authors:
+  - Duke Chiaha <dchiaha@gmail.com>
 homepage: https://github.com/Deuque/TwilioPhoneVerify
 
 environment:

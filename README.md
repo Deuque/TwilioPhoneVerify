@@ -48,7 +48,7 @@ if(result['message'] == 'success'){
 var result = await _twilioPhoneVerify.verifySmsCode(phoneNumber, code);
 
 if (result['message'] == 'approved'){
-  // code sent
+  // phone number verified
 }else{
   // error
   //print('${result['statusCode']} : ${result['message']}');

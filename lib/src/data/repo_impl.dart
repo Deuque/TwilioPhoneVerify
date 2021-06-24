@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:twilio_phone_verify/src/data/repo.dart';
 import 'package:twilio_phone_verify/src/endpoints.dart';
+import 'package:twilio_phone_verify/src/model/email_channel_configuration.dart';
 import 'package:twilio_phone_verify/src/model/twilio_reponse.dart';
 import 'package:http/http.dart';
 import 'package:twilio_phone_verify/src/model/verification.dart';
@@ -15,8 +16,18 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
       {@required this.baseUrl, @required this.authorization});
 
   @override
-  Future<TwilioResponse> sendEmailCode(String email) async {
-    // TODO: implement sendEmailCode
+  Future<TwilioResponse> sendEmailCode(String email,
+      {EmailChannelConfiguration channelConfiguration}) async {
+    String url = '$baseUrl${TwilioVerifyEndpoint.verification}';
+
+    return await resolveHttpRequest(url: url, body: {
+      'To': email,
+      'Channel': 'email',
+      if (channelConfiguration != null)
+        'ChannelConfiguration': channelConfiguration.toMap()
+    }, headers: {
+      'Authorization': authorization
+    });
   }
 
   @override
@@ -24,16 +35,20 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
     // TODO: implement sendEmailCode
     String url = '$baseUrl${TwilioVerifyEndpoint.verification}';
 
-    await resolveHttpRequest(
+    return await resolveHttpRequest(
         url: url,
         body: {'To': phone, 'Channel': 'sms'},
         headers: {'Authorization': authorization});
   }
 
   @override
-  Future<TwilioResponse> verifyEmailCode(String email, String code) {
-    // TODO: implement verifyEmailCode
-    throw UnimplementedError();
+  Future<TwilioResponse> verifyEmailCode(String email, String code) async{
+    String url = '$baseUrl$TwilioVerifyEndpoint.verificationCheck';
+
+    return await resolveHttpRequest(
+        url: url,
+        body: {'To': email, 'Code': code},
+        headers: {'Authorization': authorization});
   }
 
   @override
@@ -68,6 +83,4 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
           statusCode: 400, errorMessage: e.toString(), verification: null);
     }
   }
-
-
 }

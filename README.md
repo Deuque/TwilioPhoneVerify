@@ -31,34 +31,90 @@ _twilioPhoneVerify = new TwilioPhoneVerify(
         serviceSid: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // replace with Service SID
         );
 ```
-#### Send code to phone through sms
-```dart
-var result = await _twilioPhoneVerify.sendSmsCode(phoneNumber);
 
-if(result['message'] == 'success'){
-  // code sent
-}else{
-  // error
-  //print('${result['statusCode']} : ${result['message']}');
-}
+### Phone number verification
+
+##### Send Code to Phone
+```dart
+ var twilioResponse =
+        await _twilioPhoneVerify.sendSmsCode('phone');
+
+    if (twilioResponse.successful)  {
+      //code sent
+    } else {
+      //print(twilioResponse.errorMessage);
+    }
 ```
 
-#### Verify code
+##### Verify Code
 ```dart
-var result = await _twilioPhoneVerify.verifySmsCode(phoneNumber, code);
+    var twilioResponse = await _twilioPhoneVerify.verifySmsCode(
+        phone: 'phone', code: 'code');
 
-if (result['message'] == 'approved'){
-  // phone number verified
-}else{
-  // error
-  //print('${result['statusCode']} : ${result['message']}');
-}
+    if (twilioResponse.successful) {
+      if (twilioResponse.verification.status == VerificationStatus.approved) {
+        //print('Phone number is approved');
+      } else {
+        //print('Invalid code');
+      }
+    } else {
+      //print(twilioResponse.errorMessage);
+    }
+```
+
+### Email Verification
+Twilio Verify email channel requires additional Service configuration. Please refer to the [email channel setup documentation for detailed instructions](https://www.twilio.com/docs/verify/email "email channel setup documentation for detailed instructions").
+
+##### Send Code to Email
+```dart
+ var twilioResponse =
+        await _twilioPhoneVerify.sendEmailCode('email');
+
+    if (twilioResponse.successful)  {
+      //code sent
+    } else {
+      //print(twilioResponse.errorMessage);
+    }
+```
+
+##### Verify Email Code
+```dart
+    var twilioResponse = await _twilioPhoneVerify.verifyEmailCode(
+        email: 'email', code: 'code');
+
+    if (twilioResponse.successful) {
+      if (twilioResponse.verification.status == VerificationStatus.approved) {
+        //print('Email is approved');
+      } else {
+        //print('Invalid code');
+      }
+    } else {
+      //print(twilioResponse.errorMessage);
+    }
+```
+
+##### Override Email configurations
+```dart
+ var twilioResponse =
+        await _twilioPhoneVerify.sendEmailCode('email',channelConfiguration:
+    EmailChannelConfiguration(
+        from: "override@example.com",
+        from_name: "Override Name",
+        template_id: "d-4f7abxxxxxxxxxxxx",
+		usernameSubstitution: "Foo Bar"
+    ));
+
+    if (twilioResponse.successful)  {
+      //code sent
+    } else {
+      //print(twilioResponse.errorMessage);
+    }
 ```
 
 # Features
 
 - [x] Phone verification
-- [ ] Email verification - Coming soon.
+- [x] Email verification.
 
 ## Getting Started
 

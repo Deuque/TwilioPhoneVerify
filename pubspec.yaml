@@ -1,13 +1,11 @@
 name: twilio_phone_verify
 description: A Package that helps in verifying phone numbers and email addresses using Twilio.
 version: 1.0.0
-authors:
-  - Duke Chiaha <dchiaha@gmail.com>
 homepage: https://github.com/Deuque/TwilioPhoneVerify
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.17.0 <2.0.0"
+  flutter: ">=1.17.0"
 
 dependencies:
   flutter:

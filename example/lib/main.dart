@@ -85,7 +85,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     TwilioResponse twilioResponse =
         await _twilioPhoneVerify.sendSmsCode(phoneNumberController.text);
 
-    if (twilioResponse.statusCode == 200 || twilioResponse.statusCode == 201) {
+    if (twilioResponse.successful) {
       changeSuccessMessage('Code sent to ${phoneNumberController.text}');
       await Future.delayed(Duration(seconds: 1));
       switchToSmsCode();
@@ -102,11 +102,11 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     changeLoading(true);
     TwilioResponse twilioResponse = await _twilioPhoneVerify.verifySmsCode(
         phone: phoneNumberController.text, code: smsCodeController.text);
-    if (twilioResponse.statusCode == 200 || twilioResponse.statusCode == 201) {
+    if (twilioResponse.successful) {
       if (twilioResponse.verification.status == VerificationStatus.approved) {
         changeSuccessMessage('Phone number is approved');
       } else {
-        changeSuccessMessage('Phone number is pending or cancelled');
+        changeSuccessMessage('Invalid code');
       }
     } else {
       changeErrorMessage(twilioResponse.errorMessage);

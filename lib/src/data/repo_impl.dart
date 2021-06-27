@@ -69,16 +69,19 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
         return TwilioResponse(
             statusCode: response.statusCode,
             errorMessage: '',
+            successful: true,
             verification: Verification.fromMap(jsonDecode(response.body)));
       } else {
         return TwilioResponse(
             statusCode: response.statusCode,
+            successful: false,
             errorMessage: '${jsonDecode(response.body)['message']}',
             verification: null);
       }
     } catch (e) {
       debugPrint('got here');
       return TwilioResponse(
+        successful: false,
           statusCode: 400, errorMessage: e.toString(), verification: null);
     }
   }

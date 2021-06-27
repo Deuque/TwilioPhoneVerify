@@ -41,9 +41,9 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     // TODO: implement initState
     super.initState();
     _twilioPhoneVerify = TwilioPhoneVerify(
-        accountSid: 'ACce5c85828954941b3419927acf8b78a5',
-        serviceSid: 'VAbc9a661da1310491238638346732b542',
-        authToken: '9bf9a8483f977346b61f64a8db899f8c');
+        accountSid: '',
+        serviceSid: '',
+        authToken: '');
   }
 
   @override

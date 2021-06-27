@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:twilio_phone_verify/twilio_phone_verify.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,6 +27,8 @@ class PhoneVerification extends StatefulWidget {
 }
 
 class _PhoneVerificationState extends State<PhoneVerification> {
+  TwilioPhoneVerify _twilioPhoneVerify;
+
   var verificationState = VerificationState.enterPhone;
   var phoneNumberController = TextEditingController();
   var smsCodeController = TextEditingController();
@@ -34,23 +37,33 @@ class _PhoneVerificationState extends State<PhoneVerification> {
   String successMessage;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _twilioPhoneVerify = TwilioPhoneVerify(
+        accountSid: 'ACce5c85828954941b3419927acf8b78a5',
+        serviceSid: 'VAbc9a661da1310491238638346732b542',
+        authToken: '9bf9a8483f977346b61f64a8db899f8c');
+  }
+
+  @override
   Widget build(BuildContext context) {
     return verificationState == VerificationState.enterPhone
         ? _buildEnterPhoneNumber()
         : _buildEnterSmsCode();
   }
 
-  void resetErrorMessage() => setState(() => errorMessage = null);
+  void changeErrorMessage(var message) =>
+      setState(() => errorMessage = message);
 
-  void resetSuccessMessage() => setState(() => successMessage = null);
+  void changeSuccessMessage(var message) =>
+      setState(() => successMessage = message);
 
   void changeLoading(bool status) => setState(() => loading = status);
 
   void switchToSmsCode() async {
-    changeLoading(true);
-    await Future.delayed(Duration(seconds: 1));
-    resetSuccessMessage();
-    resetErrorMessage();
+    changeSuccessMessage(null);
+    changeErrorMessage(null);
     changeLoading(false);
     setState(() {
       verificationState = VerificationState.enterSmsCode;
@@ -59,11 +72,46 @@ class _PhoneVerificationState extends State<PhoneVerification> {
 
   void switchToPhoneNumber() {
     if (loading) return;
-    resetSuccessMessage();
-    resetErrorMessage();
+    changeSuccessMessage(null);
+    changeErrorMessage(null);
     setState(() {
       verificationState = VerificationState.enterPhone;
     });
+  }
+
+  void sendCode() async {
+    if (phoneNumberController.text.isEmpty || loading) return;
+    changeLoading(true);
+    TwilioResponse twilioResponse =
+        await _twilioPhoneVerify.sendSmsCode(phoneNumberController.text);
+
+    if (twilioResponse.statusCode == 200 || twilioResponse.statusCode == 201) {
+      changeSuccessMessage('Code sent to ${phoneNumberController.text}');
+      await Future.delayed(Duration(seconds: 1));
+      switchToSmsCode();
+    } else {
+      changeErrorMessage(twilioResponse.errorMessage);
+    }
+    changeLoading(false);
+  }
+
+  void verifyCode() async {
+    if (phoneNumberController.text.isEmpty ||
+        smsCodeController.text.isEmpty ||
+        loading) return;
+    changeLoading(true);
+    TwilioResponse twilioResponse = await _twilioPhoneVerify.verifySmsCode(
+        phone: phoneNumberController.text, code: smsCodeController.text);
+    if (twilioResponse.statusCode == 200 || twilioResponse.statusCode == 201) {
+      if (twilioResponse.verification.status == VerificationStatus.approved) {
+        changeSuccessMessage('Phone number is approved');
+      } else {
+        changeSuccessMessage('Phone number is pending or cancelled');
+      }
+    } else {
+      changeErrorMessage(twilioResponse.errorMessage);
+    }
+    changeLoading(false);
   }
 
   _buildEnterPhoneNumber() {
@@ -85,7 +133,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
               width: double.infinity,
               height: 40,
               child: TextButton(
-                  onPressed: switchToSmsCode,
+                  onPressed: sendCode,
                   style: TextButton.styleFrom(
                       backgroundColor: Theme.of(context).primaryColor),
                   child: loading
@@ -144,7 +192,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
               width: double.infinity,
               height: 40,
               child: TextButton(
-                  onPressed: () {},
+                  onPressed: verifyCode,
                   style: TextButton.styleFrom(
                       backgroundColor: Theme.of(context).primaryColor),
                   child: loading
@@ -198,7 +246,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                     Icons.close,
                     size: 16,
                   ),
-                  onPressed: resetErrorMessage)
+                  onPressed: () => changeErrorMessage(null))
             ],
           ),
         ),
@@ -221,7 +269,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
                     Icons.close,
                     size: 16,
                   ),
-                  onPressed: resetSuccessMessage)
+                  onPressed: () => changeSuccessMessage(null))
             ],
           ),
         ),

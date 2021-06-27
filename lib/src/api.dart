@@ -11,7 +11,7 @@ class TwilioPhoneVerify {
   TwilioVerifyRepository _repository;
 
   TwilioPhoneVerify(
-      {@required this.accountSid, @required this.serviceSid, this.authToken}) {
+      {@required this.accountSid, @required this.serviceSid, @required this.authToken}) {
     _repository = TwilioVerifyRepositoryImpl(
         baseUrl: 'https://verify.twilio.com/v2/Services/$serviceSid',
         authorization:

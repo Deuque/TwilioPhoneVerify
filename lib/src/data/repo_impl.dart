@@ -24,7 +24,7 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
       'To': email,
       'Channel': 'email',
       if (channelConfiguration != null)
-        'ChannelConfiguration': channelConfiguration.toMap()
+        'ChannelConfiguration': jsonEncode(channelConfiguration.toMap())
     }, headers: {
       'Authorization': authorization
     });
@@ -42,8 +42,8 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
   }
 
   @override
-  Future<TwilioResponse> verifyEmailCode(String email, String code) async{
-    String url = '$baseUrl$TwilioVerifyEndpoint.verificationCheck';
+  Future<TwilioResponse> verifyEmailCode(String email, String code) async {
+    String url = '$baseUrl${TwilioVerifyEndpoint.verificationCheck}';
 
     return await resolveHttpRequest(
         url: url,
@@ -53,7 +53,7 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
 
   @override
   Future<TwilioResponse> verifySmsCode(String phone, String code) async {
-    String url = '$baseUrl$TwilioVerifyEndpoint.verificationCheck';
+    String url = '$baseUrl${TwilioVerifyEndpoint.verificationCheck}';
 
     return await resolveHttpRequest(
         url: url,
@@ -62,9 +62,7 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
   }
 
   Future<TwilioResponse> resolveHttpRequest(
-      {String url,
-      Map<String, dynamic> body,
-      Map<String, dynamic> headers}) async {
+      {String url, var body, var headers}) async {
     try {
       var response = await post(url, body: body, headers: headers);
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -79,6 +77,7 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
             verification: null);
       }
     } catch (e) {
+      debugPrint('got here');
       return TwilioResponse(
           statusCode: 400, errorMessage: e.toString(), verification: null);
     }

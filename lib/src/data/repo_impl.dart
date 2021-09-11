@@ -13,11 +13,11 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
   final String authorization;
 
   TwilioVerifyRepositoryImpl(
-      {@required this.baseUrl, @required this.authorization});
+      {required this.baseUrl, required this.authorization});
 
   @override
   Future<TwilioResponse> sendEmailCode(String email,
-      {EmailChannelConfiguration channelConfiguration}) async {
+      {EmailChannelConfiguration? channelConfiguration}) async {
     String url = '$baseUrl${TwilioVerifyEndpoint.verification}';
 
     return await resolveHttpRequest(url: url, body: {
@@ -62,9 +62,9 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
   }
 
   Future<TwilioResponse> resolveHttpRequest(
-      {String url, var body, var headers}) async {
+      {required String url, var body, var headers}) async {
     try {
-      var response = await post(url, body: body, headers: headers);
+      var response = await post(Uri.parse(url), body: body, headers: headers);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return TwilioResponse(
             statusCode: response.statusCode,
@@ -81,8 +81,10 @@ class TwilioVerifyRepositoryImpl implements TwilioVerifyRepository {
     } catch (e) {
       debugPrint('got here');
       return TwilioResponse(
-        successful: false,
-          statusCode: 400, errorMessage: e.toString(), verification: null);
+          successful: false,
+          statusCode: 400,
+          errorMessage: e.toString(),
+          verification: null);
     }
   }
 }

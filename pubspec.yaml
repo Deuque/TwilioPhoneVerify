@@ -1,16 +1,16 @@
 name: twilio_phone_verify
 description: A Package that helps in verifying phone numbers and email addresses using Twilio.
-version: 1.0.0
+version: 2.0.0
 homepage: https://github.com/Deuque/TwilioPhoneVerify
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.12.2
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:

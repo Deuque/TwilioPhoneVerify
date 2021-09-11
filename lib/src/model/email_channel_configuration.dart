@@ -1,8 +1,8 @@
 class EmailChannelConfiguration {
-  String from;
-  String from_name;
-  String template_id;
-  String usernameSubstitution;
+  String? from;
+  String? from_name;
+  String? template_id;
+  String? usernameSubstitution;
 
   EmailChannelConfiguration(
       {this.from, this.from_name, this.template_id, this.usernameSubstitution});

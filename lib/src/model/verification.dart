@@ -2,11 +2,11 @@ import 'package:twilio_phone_verify/src/helpers.dart';
 
 enum VerificationStatus { pending, approved, cancelled }
 class Verification {
-  String to;
-  String channel;
-  VerificationStatus status;
-  String dateCreated;
-  String dateUpdated;
+  String? to;
+  String? channel;
+  VerificationStatus? status;
+  String? dateCreated;
+  String? dateUpdated;
 
   Verification(
       {this.to, this.channel, this.status, this.dateCreated, this.dateUpdated});

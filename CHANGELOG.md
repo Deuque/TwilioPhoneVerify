@@ -1,3 +1,7 @@
+## [2.0.0] - 2021-09-11
+
+* Migrated to null safety.
+
 ## [1.0.0] - 2021-06-27
 
 * Email verification added and bug fixes.

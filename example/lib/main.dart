@@ -27,23 +27,21 @@ class PhoneVerification extends StatefulWidget {
 }
 
 class _PhoneVerificationState extends State<PhoneVerification> {
-  TwilioPhoneVerify _twilioPhoneVerify;
+  late TwilioPhoneVerify _twilioPhoneVerify;
 
   var verificationState = VerificationState.enterPhone;
   var phoneNumberController = TextEditingController();
   var smsCodeController = TextEditingController();
   bool loading = false;
-  String errorMessage;
-  String successMessage;
+  String? errorMessage;
+  String? successMessage;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _twilioPhoneVerify = TwilioPhoneVerify(
-        accountSid: '',
-        serviceSid: '',
-        authToken: '');
+    _twilioPhoneVerify =
+        TwilioPhoneVerify(accountSid: '', serviceSid: '', authToken: '');
   }
 
   @override
@@ -85,7 +83,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     TwilioResponse twilioResponse =
         await _twilioPhoneVerify.sendSmsCode(phoneNumberController.text);
 
-    if (twilioResponse.successful) {
+    if (twilioResponse.successful == true) {
       changeSuccessMessage('Code sent to ${phoneNumberController.text}');
       await Future.delayed(Duration(seconds: 1));
       switchToSmsCode();
@@ -102,8 +100,8 @@ class _PhoneVerificationState extends State<PhoneVerification> {
     changeLoading(true);
     TwilioResponse twilioResponse = await _twilioPhoneVerify.verifySmsCode(
         phone: phoneNumberController.text, code: smsCodeController.text);
-    if (twilioResponse.successful) {
-      if (twilioResponse.verification.status == VerificationStatus.approved) {
+    if (twilioResponse.successful == true) {
+      if (twilioResponse.verification?.status == VerificationStatus.approved) {
         changeSuccessMessage('Phone number is approved');
       } else {
         changeSuccessMessage('Invalid code');
@@ -238,7 +236,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
             children: [
               Expanded(
                   child: Text(
-                errorMessage,
+                errorMessage ?? "",
                 style: TextStyle(color: Colors.red),
               )),
               IconButton(
@@ -261,7 +259,7 @@ class _PhoneVerificationState extends State<PhoneVerification> {
             children: [
               Expanded(
                   child: Text(
-                successMessage,
+                successMessage ?? "",
                 style: TextStyle(color: Colors.green),
               )),
               IconButton(

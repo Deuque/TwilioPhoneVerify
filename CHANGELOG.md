@@ -1,3 +1,8 @@
+## [3.0.0] - 2021-09-11
+
+* Migrated to Dart 3.
+
+
 ## [2.0.0] - 2021-09-11
 
 * Migrated to null safety.
